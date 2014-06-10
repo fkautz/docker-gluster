@@ -3,7 +3,7 @@ FROM centos
 RUN yum -y update
 RUN yum -y install glusterfs glusterfs-server
 
-ADD start-gluster.sh
+ADD start-gluster.sh /
 
 CMD /bin/sh start-gluster.sh
 
