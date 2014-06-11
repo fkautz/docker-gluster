@@ -1,10 +1,11 @@
 FROM centos
 
 
-RUN yum -y update
-RUN yum -y install wget
-RUN wget http://download.gluster.org/pub/gluster/glusterfs/3.5/3.5.0/CentOS/glusterfs-epel.repo -O /etc/yum.repos.d/glusterfs-epel.repo
-RUN yum -y install glusterfs glusterfs-server
+RUN yum --setopt=tsflags=nodocs -y update
+RUN yum --setopt=tsflags=nodocs -y install wget
+RUN yum --setopt=tsflags=nodocs -y install nfs-utils
+RUN wget http://download.gluster.org/pub/gluster/glusterfs/3.5/LATEST/CentOS/glusterfs-epel.repo -O /etc/yum.repos.d/glusterfs-epel.repo
+RUN yum --setopt=tsflags=nodocs -y install glusterfs glusterfs-server glusterfs-fuse glusterfs-geo-replication
 
 ADD start-gluster.sh /
 
