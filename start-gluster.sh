@@ -1,11 +1,25 @@
-IPADDR=$(/sbin/ifconfig eth0 |grep -i "net addr" |  awk '{print $2}' | sed 's/.*://g')
+# Make sure rpcbind is started - GlusterNFS would complain
+## RPC bind service will complain about Locale files but ignore
+service rpcbind start
 
-glusterd -N &
+## On docker surprisingly hostnames are mapped to IP's :-)
+IPADDR=$(hostname -i)
 
-if [ ! -d "$DIRECTORY" ]; then
-  gluster volume create vault $IPADDR:/mnt/vault force
+## Start Gluster Management Daemon
+service glusterd start
+
+if [ ! -d "/mnt/vault/myvolume/.glusterfs" ]; then
+  ## Always create a sub-directory inside a mount-point
+  gluster volume create myvolume $IPADDR:/mnt/vault/myvolume
 fi
 
-gluster volume start vault
+gluster volume start myvolume
 
-wait
+shutdown_gluster()
+{
+  service glusterd stop
+  exit $?
+}
+
+trap shutdown_gluster SIGINT
+while true; do sleep 1; done
