@@ -1,10 +1,10 @@
 FROM centos
 
 
-RUN yum -y update
-RUN yum -y install wget
+RUN yum -y update ; yum clean all
+RUN yum -y install wget ; yum clean all
 RUN wget http://download.gluster.org/pub/gluster/glusterfs/3.5/3.5.0/CentOS/glusterfs-epel.repo -O /etc/yum.repos.d/glusterfs-epel.repo
-RUN yum -y install glusterfs glusterfs-server
+RUN yum -y install glusterfs glusterfs-server ; yum clean all
 
 ADD start-gluster.sh /
 
