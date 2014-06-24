@@ -5,15 +5,24 @@ service rpcbind start
 ## On docker surprisingly hostnames are mapped to IP's :-)
 IPADDR=$(hostname -i)
 
+## Change this to your name if necessary
+VOLUME=myvolume
+
 ## Start Gluster Management Daemon
 service glusterd start
 
-if [ ! -d "/mnt/vault/myvolume/.glusterfs" ]; then
-  ## Always create a sub-directory inside a mount-point
-  gluster volume create myvolume $IPADDR:/mnt/vault/myvolume
+if [ -z $VOLUME ]; then
+  ## Check if volume is null
+  service glusterd top
+  exit 255
 fi
 
-gluster volume start myvolume
+if [ ! -d "/var/lib/glusterd/vols/$VOLUME" ]; then
+  ## Always create a sub-directory inside a mount-point
+  gluster --mode=script --wignore volume create $VOLUME $IPADDR:/mnt/vault/$VOLUME
+fi
+
+gluster --mode=script --wignore volume start $VOLUME force
 
 shutdown_gluster()
 {
