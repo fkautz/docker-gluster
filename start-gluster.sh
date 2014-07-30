@@ -13,7 +13,7 @@ service glusterd start
 
 if [ -z $VOLUME ]; then
   ## Check if volume is null
-  service glusterd top
+  service glusterd stop
   exit 255
 fi
 
